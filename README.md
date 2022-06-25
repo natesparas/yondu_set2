@@ -70,8 +70,11 @@ To run this application
                 "password": "dalisay"
         }
         
+3. Get Users List
+   
+   ![getUsers](img/getUsers.png)
 
-3. Edit User. **id is required**
+4. Edit User. **id is required**. Get id from the **getUsers** endpoint.
    
    ![editUser](img/editUser.png)
 > **editUser Endpoint : Sample request**
@@ -81,7 +84,7 @@ To run this application
                 "firstName": "Pedro"
         }
 
-4. Delete User by ID. **id is required**
+5. Delete User by ID. **id is required**. Get id from the **getUsers** endpoint.
 
    ![deleteUserByID](img/deleteUserByID.png)
 > **deleteUserByID Endpoint : Sample request**
@@ -90,11 +93,7 @@ To run this application
                 "id": "13"
         }
 
-5. Get Users List
-   
-   ![getUsers](img/getUsers.png)
-
-6. Delete Multiple User. **id is required and must be in array**
+6. Delete Multiple User. **id is required and must be in array**. Get id from the **getUsers** endpoint.
 
    ![deleteUsers](img/deleteUsers.png)
 > **deleteUsers Endpoint : Sample request**
