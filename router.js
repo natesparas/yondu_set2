@@ -11,7 +11,8 @@ const async = require('async');
 router.post('/addUser', addValidation, (req, res, next) => {
 	var err = validationResult(req);
 	if (!err.isEmpty()) {
-		return res.status(422).json({
+		return res.status(409).json({
+			code: '409',
 			message: err.errors,
 		});
 	} else {
@@ -20,13 +21,15 @@ router.post('/addUser', addValidation, (req, res, next) => {
 			(err, result) => {
 				if (result.length) {
 					return res.status(409).send({
-						msg: 'The usernmae is already exist!'
+						code: '409',
+						message: 'The usernmae is already exist!'
 					});
 				} else {
 					bcrypt.hash(req.body.password, 10, (err, hash) => {
 						if (err) {
 							return res.status(500).send({
-								msg: err
+								code: '509',
+								message: err
 							});
 						} else {
 							db.query(
@@ -35,11 +38,12 @@ router.post('/addUser', addValidation, (req, res, next) => {
 									if (err) {
 										// throw err;
 										return res.status(400).send({
-											msg: err
+											message: err
 										});
 									}
 									return res.status(200).send({
-										msg: 'Successfully Added!',
+										code: '000',
+										message: 'Successfully Added!',
 										token: jwt.sign(result.insertId,'secretKey')
 									});
 								}
@@ -58,14 +62,16 @@ router.post('/login', loginValidation, (req, res, next) => {
 		!req.headers.authorization.startsWith('Bearer') ||
 		!req.headers.authorization.split(' ')[1]
 	){
-		return res.status(422).json({
+		return res.status(409).json({
+			code: "409",
 			message: "Please provide the token",
 		});
 	}
 
 	var err = validationResult(req);
 	if (!err.isEmpty()) {
-		return res.status(422).json({
+		return res.status(409).json({
+			code: '409',
 			message: err.errors,
 		});
 	} else {
@@ -79,13 +85,15 @@ router.post('/login', loginValidation, (req, res, next) => {
 				// user does not exists
 				if (err) {
 					// throw err;
-					return res.status(400).send({
-						msg: err
+					return res.status(509).send({
+						code: '509',
+						message: err
 					});
 				}
 				if (!result.length) {
-					return res.status(401).send({
-						msg: 'Username or password is incorrect!'
+					return res.status(409).send({
+						code: '409',
+						message: 'Username or password is incorrect!'
 					});
 				}
 				// check password
@@ -96,8 +104,9 @@ router.post('/login', loginValidation, (req, res, next) => {
 						// wrong password
 						if (bErr) {
 							// throw bErr;
-							return res.status(401).send({
-								msg: 'Username or password is incorrect!'
+							return res.status(200).send({
+								code: '200',
+								message: 'Username or password is incorrect!'
 							});
 						}
 
@@ -112,13 +121,15 @@ router.post('/login', loginValidation, (req, res, next) => {
 								username : result[0].username,
 							}
 							return res.status(200).send({
-								msg: 'Logged in!',
+								code: '200',
+								message: 'Logged in!',
 								user: userDetails
 							});
 						}
 
-						return res.status(401).send({
-							msg: 'Username or password is incorrect!'
+						return res.status(408).send({
+							code: '408',
+							message: 'Username or password is incorrect!'
 						});
 					}
 				);
@@ -131,6 +142,7 @@ router.get('/getUsers', (req, res, next) => {
 	db.query('SELECT * FROM users', function (error, results, fields) {
 		if (error) throw error;
 		return res.status(200).send({ 
+			code: '200',
 			message: 'Users List',
 			data: results, 
 		});
@@ -140,7 +152,8 @@ router.get('/getUsers', (req, res, next) => {
 router.put('/editUser', editValidation, (req, res, next) => {
 	var err = validationResult(req);
 	if (!err.isEmpty()) {
-		return res.status(422).json({
+		return res.status(409).json({
+			code: "409",
 			message: err.errors,
 		});
 	} else {
@@ -149,7 +162,8 @@ router.put('/editUser', editValidation, (req, res, next) => {
 
 			// Return error if id does not exist
 			if (_.isEmpty(results)) {
-				return res.send({
+				return res.status(200).send({
+					code: "200",
 					message: 'User does not exist!' 
 				});
 			}
@@ -160,9 +174,10 @@ router.put('/editUser', editValidation, (req, res, next) => {
 
 				db.query('SELECT * FROM users WHERE id = ?', [req.body.id], function (error, results, fields) {
 					if (error) throw error;
-					return res.send({
-						data: results, 
-						message: 'User has been successfully updated!' 
+					return res.status(200).send({
+						code: "200",
+						message: 'User has been successfully updated!',
+						data: results
 					});
 				});
 			});
@@ -174,7 +189,8 @@ router.put('/editUser', editValidation, (req, res, next) => {
 router.delete('/deleteUserByID', editValidation, (req, res, next) => {
 	var err = validationResult(req);
 	if (!err.isEmpty()) {
-		return res.status(422).json({
+		return res.status(409).json({
+			code: "409",
 			message: err.errors,
 		});
 	} else {
@@ -182,27 +198,28 @@ router.delete('/deleteUserByID', editValidation, (req, res, next) => {
 			if (err) throw err;
 
 			if (_.isEmpty(results)) {
-				return res.send({
+				return res.status(200).send({
+					code: "409",
 					message: 'User does not exist!' 
 				});
 			}
 
-			return res.send({
-				data: results, 
-				message: 'User has been successfully deleted!' 
-			});
+			db.query('DELETE FROM users WHERE id = ?', [req.body.id], function (error, results, fields) {
+				if (error) throw error;
 
-			// db.query('DELETE FROM users WHERE id = ?', [req.body.id], function (error, results, fields) {
-			// 	if (error) throw error;
+				return res.status(200).send({
+					code: "200",
+					message: 'User has been successfully deleted!' 
+				});
 	
-			// 	db.query('SELECT * FROM users', function (error, results, fields) {
-			// 		if (error) throw error;
-			// 		return res.send({
-			// 			data: results, 
-			// 			message: 'User has been successfully deleted!' 
-			// 		});
-			// 	});
-			// });
+				// db.query('SELECT * FROM users', function (error, results, fields) {
+				// 	if (error) throw error;
+				// 	return res.send({
+				// 		data: results, 
+				// 		message: 'User has been successfully deleted!' 
+				// 	});
+				// });
+			});
 		})
 	}
 })
@@ -210,11 +227,12 @@ router.delete('/deleteUserByID', editValidation, (req, res, next) => {
 router.delete('/deleteUsers', editValidation, async (req, res, next) => {
 	var err = validationResult(req);
 	if (!err.isEmpty()) {
-		return res.status(422).json({
+		return res.status(409).json({
+			code: "409",
 			message: err.errors,
 		});
 	} else {
-		let ids = JSON.parse(req.body.id)
+		let ids = req.body.id
 		let notExist = [];
 
 		for (let i=0; i < ids.length; i++) {
@@ -232,18 +250,26 @@ router.delete('/deleteUsers', editValidation, async (req, res, next) => {
 
 		// Delete record if all ids are found
 		let newIds = ids.filter(x => !notExist.includes(x));
-		db.query('DELETE FROM users WHERE id IN (?)', [newIds], function (error, results, fields) {
-			if (error) throw error;
+		if (!_.isEmpty(newIds)) {
+			db.query('DELETE FROM users WHERE id IN (?)', [newIds], function (error, results, fields) {
+				if (error) throw error;
 
-			msgs.Success = {
-				data: results,
-				message: 'User with id: '+newIds+' has been successfully deleted!'
-			}
+				msgs.Success = {
+					message: 'User with id: '+newIds+' has been successfully deleted!'
+				}
 
-			return res.send({
+				return res.status(200).send({
+					code: '200',
+					message: msgs
+				});
+			});
+		} else {
+			return res.status(200).send({
+				code: '200',
 				message: msgs
 			});
-		});
+		}
+		
 	}
 })
 

@@ -23,8 +23,8 @@ exports.up = function(db, callback) {
     postCode: { type: 'string', length: 100, notNull: false },
     phoneNumber: { type: 'string', length: 50, notNull: false },
     Email: { type: 'string', length: 100, notNull: false },
-    username: { type: 'string', length: 100, notNull: false },
-    password: { type: 'string', length: 100, notNull: false },
+    username: { type: 'string', length: 100, notNull: true },
+    password: { type: 'string', length: 100, notNull: true },
   }, callback);
 };
 
