@@ -23,6 +23,29 @@ To run this application
 3. Create table
    > `db-migrate create users`
 
+   > `refactor the code in export.up and export.down in -user.js located at migation folder`
+
+        
+        exports.up = function(db, callback) {
+                db.createTable('users', {
+                        id: { type: 'int', notNull: true, primaryKey: true, autoIncrement: true },
+                        firstName: { type: 'string', length: 100, notNull: false },
+                        lastName: { type: 'string', length: 100, notNull: false },
+                        address: { type: 'string', length: 100, notNull: false },
+                        postCode: { type: 'string', length: 100, notNull: false },
+                        phoneNumber: { type: 'string', length: 50, notNull: false },
+                        Email: { type: 'string', length: 100, notNull: false },
+                        username: { type: 'string', length: 100, notNull: true },
+                        password: { type: 'string', length: 100, notNull: true },
+                }, callback);
+        };
+
+        exports.down = function(db) {
+                return db.dropTable('users');
+        };
+        
+
+
 4. Migrate table fields
    > `db-migrate up`
 
