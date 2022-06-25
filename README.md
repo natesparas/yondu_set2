@@ -16,6 +16,10 @@ To run this application
 2. Create database
    > `db-migrate db:create db_user`
 
+   > `add "database" : { "ENV" : "DB_NAME" }, in database.json`
+
+   > `if db-migrate command not found, try **npm install -g db-migrate**`
+
 3. Create table
    > `db-migrate create users`
 
