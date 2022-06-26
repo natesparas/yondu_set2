@@ -36,7 +36,7 @@ $ db-migrate create users
 ```
 > `refactor the code in export.up and export.down in -user.js located at migations folder`
 
-```json  
+```sh  
 exports.up = function(db, callback) {
        db.createTable('users', {
                id: { type: 'int', notNull: true, primaryKey: true, autoIncrement: true },
