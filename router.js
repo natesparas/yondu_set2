@@ -44,7 +44,7 @@ router.post('/addUser', addValidation, (req, res, next) => {
 									return res.status(200).send({
 										code: '000',
 										message: 'Successfully Added!',
-										token: jwt.sign(result.insertId,'secretKey')
+										token: jwt.sign(result.insertId, process.env.SECRET_KET)
 									});
 								}
 							);
@@ -77,64 +77,72 @@ router.post('/login', loginValidation, (req, res, next) => {
 	} else {
 
 		const theToken = req.headers.authorization.split(' ')[1];
-		const decoded = jwt.verify(theToken, 'secretKey');
+		// const decoded = jwt.verify(theToken, 'secretKey');
+		jwt.verify(theToken, process.env.SECRET_KET, (error, result) => {
+			if (error) {
+				return res.status(403).send({
+					code: '403', 
+					message: error.message
+				});
+			}
 
-		db.query(
-			`SELECT * FROM users WHERE username = ${db.escape(req.body.username)} AND id = ${decoded};`,
-			(err, result) => {
-				// user does not exists
-				if (err) {
-					// throw err;
-					return res.status(509).send({
-						code: '509',
-						message: err
-					});
-				}
-				if (!result.length) {
-					return res.status(409).send({
-						code: '409',
-						message: 'Username or password is incorrect!'
-					});
-				}
-				// check password
-				bcrypt.compare(
-					req.body.password,
-					result[0]['password'],
-					(bErr, bResult) => {
-						// wrong password
-						if (bErr) {
-							// throw bErr;
-							return res.status(200).send({
-								code: '200',
-								message: 'Username or password is incorrect!'
-							});
-						}
-
-						if (bResult) {
-							var userDetails = {
-								firstName : result[0].firstName,
-								lastName : result[0].lastName,
-								address : result[0].address,
-								postCode : result[0].postCode,
-								phoneNumber : result[0].phoneNumber,
-								email : result[0].email,
-								username : result[0].username,
-							}
-							return res.status(200).send({
-								code: '200',
-								message: 'Logged in!',
-								user: userDetails
-							});
-						}
-
-						return res.status(408).send({
-							code: '408',
+			db.query(
+				`SELECT * FROM users WHERE username = ${db.escape(req.body.username)} AND id = ${result};`,
+				(err, result) => {
+					// user does not exists
+					if (err) {
+						// throw err;
+						return res.status(509).send({
+							code: '509',
+							message: err
+						});
+					}
+					if (!result.length) {
+						return res.status(409).send({
+							code: '409',
 							message: 'Username or password is incorrect!'
 						});
 					}
-				);
-			}
-		);
+					// check password
+					bcrypt.compare(
+						req.body.password,
+						result[0]['password'],
+						(bErr, bResult) => {
+							// wrong password
+							if (bErr) {
+								// throw bErr;
+								return res.status(200).send({
+									code: '200',
+									message: 'Username or password is incorrect!'
+								});
+							}
+
+							if (bResult) {
+								var userDetails = {
+									firstName : result[0].firstName,
+									lastName : result[0].lastName,
+									address : result[0].address,
+									postCode : result[0].postCode,
+									phoneNumber : result[0].phoneNumber,
+									email : result[0].email,
+									username : result[0].username,
+								}
+								return res.status(200).send({
+									code: '200',
+									message: 'Logged in!',
+									user: userDetails
+								});
+							}
+
+							return res.status(408).send({
+								code: '408',
+								message: 'Username or password is incorrect!'
+							});
+						}
+					);
+				}
+			);
+		})
 	}
 });
 
