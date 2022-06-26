@@ -87,7 +87,7 @@ $ npm start
 ### To test the API, we will be using postman. But you can use your preferred API Platform
 
 ****
-## Step 1
+## Step 1: **Add User**
   *First, you need to add new user and get the token result.*
   - **Access Path**: http://localhost:3000/api/
   - **Method**: POST
@@ -118,7 +118,7 @@ $ npm start
 
 *✨Don't forget to copy the token result✨*
 ****
-## Step 2
+## Step 2: **Login**
 *Paste **token** in the **Autherization > Type: Bearer Token***
   - **Access Path**: http://localhost:3000/api/
   - **Method**: POST
@@ -150,7 +150,7 @@ $ npm start
 ```
 
 ****   
-## Step 3
+## Step 3: **Get Users**
 *Get Users List*
   - **Access Path**: http://localhost:3000/api/
   - **Method**: GET
@@ -189,7 +189,7 @@ $ npm start
 ```
 
 ****
-## Step 4
+## Step 4: **Edit User**
 *Edit User. **id is required**. Get id from the **getUsers** endpoint.*
   - **Access Path**: http://localhost:3000/api/
   - **Method**: PUT
@@ -224,7 +224,7 @@ $ npm start
 }
 ```
 ****
-## Step 5
+## Step 5: **Delete User**
 *Delete User by ID. **id is required**. Get id from the **getUsers** endpoint.*
   - **Access Path**: http://localhost:3000/api/
   - **Method**: DELETE
@@ -246,7 +246,7 @@ $ npm start
 }
 ```
 ****
-## Step 6
+## Step 6: **Delete Users**
 *Delete Multiple User. **id is required and must be in array**. Get id from **getUsers** endpoint.*
   - **Access Path**: http://localhost:3000/api/
   - **Method**: DELETE
