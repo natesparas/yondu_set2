@@ -84,7 +84,8 @@ $ npm start
 
 # API Endpoints User Guide
 
-### To test the API, we will be using postman. But you can use your preferred API Platform
+### To test the API, we will be using postman. But you can use your preferred API Platform.  
+All request should be in **JSON** format
 
 ****
 ## Step 1: **Add User**
@@ -92,7 +93,7 @@ $ npm start
   - **Access Path**: http://localhost:3000/api/
   - **Method**: POST
   - **Service Name**: addUser
-> **Sample request**
+> **Sample JSON request**
 
 ```json
 {
@@ -124,7 +125,7 @@ $ npm start
   - **Method**: POST
   - **Service Name**: login
   
-> **Sample request**
+> **Sample JSON request**
 
 ```json
 {
@@ -194,7 +195,7 @@ $ npm start
   - **Access Path**: http://localhost:3000/api/
   - **Method**: PUT
   - **Service Name**: editUser
-> **Sample request**
+> **Sample JSON request**
 
 ```json
 {
@@ -229,7 +230,7 @@ $ npm start
   - **Access Path**: http://localhost:3000/api/
   - **Method**: DELETE
   - **Service Name**: deleteUserByID
-> **Sample request**
+> **Sample JSON request**
 
 ```json
 {
@@ -251,7 +252,7 @@ $ npm start
   - **Access Path**: http://localhost:3000/api/
   - **Method**: DELETE
   - **Service Name**: deleteUsers
-> **Sample request**
+> **Sample JSON request**
 ```json
 {
         "id": [5,16]
